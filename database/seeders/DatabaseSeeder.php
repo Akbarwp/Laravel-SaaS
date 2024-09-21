@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Feature;
+use App\Models\Package;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -16,8 +18,41 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'Admin admin',
+            'email' => 'admin@gmail.com',
+        ]);
+
+        Feature::create([
+            'image' => 'https://img.daisyui.com/images/stock/photo-1635805737707-575885ab0820.webp',
+            'route_name' => 'feature1.index',
+            'name' => 'Calculate Sum',
+            'description' => 'Calculate two of number',
+            'required_credits' => 3,
+            'active' => true,
+        ]);
+        Feature::create([
+            'image' => 'https://img.daisyui.com/images/stock/photo-1635805737707-575885ab0820.webp',
+            'route_name' => 'feature2.index',
+            'name' => 'Calculate Difference',
+            'description' => 'Calculate the difference between two of number',
+            'required_credits' => 3,
+            'active' => true,
+        ]);
+
+        Package::created([
+            'name' => 'Nova',
+            'price' => 50000,
+            'credits' => 20,
+        ]);
+        Package::created([
+            'name' => 'Titan',
+            'price' => 150000,
+            'credits' => 50,
+        ]);
+        Package::created([
+            'name' => 'Zenith',
+            'price' => 3000000,
+            'credits' => 200,
         ]);
     }
 }
