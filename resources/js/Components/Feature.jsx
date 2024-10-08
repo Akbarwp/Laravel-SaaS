@@ -19,20 +19,21 @@ export default function Feature({ feature, answer, children }) {
                     {answer !== null && (
                         <div role="alert" className="alert alert-success text-white mb-3">
                             <i className='ri-checkbox-circle-line text-2xl'></i>
-                            <span>Result of Calculation: {answer}</span>
+                            <span className="text-white">Result of Calculation: {answer}</span>
                         </div>
                     )}
                     <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg relative">
                         {availableCredits !== null && feature.required_credits > availableCredits && (
                             <div className="absolute top-0 bottom-0 left-0 right-0 z-20 flex flex-col items-center justify-center bg-white/70 gap-3">
+                                <i className='ri-lock-2-line text-5xl'></i>
                                 <span>You don't have enough credits to use this feature. </span>
-                                <Link href='#' className='link'>Buy more Credits</Link>
+                                <Link href={route('credit.index')} className='link'>Buy more Credits</Link>
                             </div>
                         )}
 
                         <div className="p-8 border-b pb-4">
-                            <p>{feature.description}</p>
-                            <p className='text-sm italic text-left md:text-right'>
+                            <p className="dark:text-gray-200">{feature.description}</p>
+                            <p className='text-sm italic text-left md:text-right dark:text-gray-200'>
                                 Requires {feature.required_credits} credits
                             </p>
                         </div>

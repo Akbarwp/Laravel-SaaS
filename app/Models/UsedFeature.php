@@ -14,6 +14,7 @@ class UsedFeature extends Model
         'credits',
         'feature_id',
         'user_id',
+        'data',
     ];
 
     public function feature()

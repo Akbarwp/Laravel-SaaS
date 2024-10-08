@@ -37,11 +37,11 @@ export default function Authenticated({ header, children }) {
 
                         <div className="hidden sm:flex sm:items-center sm:ms-6">
                             <div className='flex items-center gap-x-2'>
-                                <span className='dark:text-white flex gap-3'>
-                                    <i className="ri-coin-line text-xl text-yellow-500"></i>
+                                <span className='dark:text-white flex gap-3 text-sm lg:text-base'>
+                                    <i className="ri-coin-line text-sm lg:text-xl text-yellow-500"></i>
                                     {user.available_credits} Credits
                                 </span>
-                                <Link href='#' className='btn btn-warning btn-outline btn-sm'>Get More</Link>
+                                <Link href={route('credit.index')} className='btn btn-warning btn-outline btn-xs lg:btn-sm'>Get More</Link>
                             </div>
                             <div className="ms-3 relative">
                                 <Dropdown>
@@ -143,6 +143,13 @@ export default function Authenticated({ header, children }) {
                         </div>
 
                         <div className="mt-3 space-y-1">
+                            <div className='flex items-center gap-x-2 ps-3 pe-4 py-2'>
+                                <span className='dark:text-white flex gap-3'>
+                                    <i className="ri-coin-line text-xl text-yellow-500"></i>
+                                    {user.available_credits} Credits
+                                </span>
+                                <Link href='#' className='btn btn-warning btn-outline btn-sm'>Get More</Link>
+                            </div>
                             <ResponsiveNavLink href={route('profile.edit')}>Profile</ResponsiveNavLink>
                             <ResponsiveNavLink method="post" href={route('logout')} as="button">
                                 Log Out

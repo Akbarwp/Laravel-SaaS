@@ -39,19 +39,19 @@ class DatabaseSeeder extends Seeder
             'active' => true,
         ]);
 
-        Package::created([
+        Package::create([
             'name' => 'Nova',
             'price' => 50000,
             'credits' => 20,
         ]);
-        Package::created([
+        Package::create([
             'name' => 'Titan',
             'price' => 150000,
             'credits' => 50,
         ]);
-        Package::created([
+        Package::create([
             'name' => 'Zenith',
-            'price' => 3000000,
+            'price' => 300000,
             'credits' => 200,
         ]);
     }
