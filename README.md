@@ -77,3 +77,23 @@ Follow the steps below to clone and run the project in your local environment:
     ```
 
 ## Screenshot
+
+- ### **Dashboard**
+
+<img src="https://github.com/user-attachments/assets/de38a299-1381-4fc5-ba78-8b7e5cf541fa" alt="Halaman Dashboard" width="" />
+<br><br>
+
+- ### **Feature**
+
+<img src="https://github.com/user-attachments/assets/1b8e773c-7346-480e-b5b0-5068cb1b5e60" alt="Halaman Fitur" width="" />
+<br><br>
+
+- ### **Buy Credits**
+
+<img src="https://github.com/user-attachments/assets/1424471c-20f5-4ee8-9b54-a6097774d9c5" alt="Halaman Pembelian Kredit" width="" />
+<br><br>
+
+- ### **Payment**
+
+<img src="https://github.com/user-attachments/assets/45b2a4a9-b89a-4539-8c38-778192b332dd" alt="Halaman Pembayaran Xendit" width="" />
+<br><br>
