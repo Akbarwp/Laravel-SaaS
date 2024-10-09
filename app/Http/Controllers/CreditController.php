@@ -5,28 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Feature;
 use App\Models\Package;
 use App\Models\Transaction;
+use App\Models\User;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Support\Facades\Auth;
-use Midtrans\Config;
-use Midtrans\Snap;
+use Xendit\Configuration;
+use Xendit\Invoice\InvoiceApi;
+use Xendit\Invoice\CreateInvoiceRequest;
 
 class CreditController extends Controller
 {
-    public function __construct()
-    {
-        // Set your Merchant Server Key
-        Config::$clientKey = env('MIDTRANS_CLIENT_KEY');
-        // Set your Merchant Server Key
-        Config::$serverKey = env('MIDTRANS_SERVER_KEY');
-        // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
-        Config::$isProduction = false;
-        // Set sanitization on (default)
-        Config::$isSanitized = true;
-        // Set 3DS transaction for credit card to true
-        Config::$is3ds = true;
-    }
-
     public function index()
     {
         $packages = Package::all();
@@ -41,48 +28,64 @@ class CreditController extends Controller
 
     public function buyCredits(Package $package)
     {
+        Configuration::setXenditKey(env('XENDIT_SECRET_KEY'));
         $user = Auth::user();
-        $params = [
-            'transaction_details' => [
-                'order_id' => 'order-' . Carbon::now()->format('His-dmY'),
-                'gross_amount' => $package->price,
-            ],
-            'customer_details' => array(
-                'first_name' => $user->name,
-                'last_name' => $user->name,
-                'email' => $user->email,
-            ),
-            'credit_card' => [
-                'secure' => true,
-            ],
-        ];
-        try {
-            // Get Snap Payment Page URL
-            $paymentUrl = Snap::createTransaction($params)->redirect_url;
+        $apiInstance = new InvoiceApi();
+        $create_invoice_request = new CreateInvoiceRequest([
+            'external_id' => 'order-' . Carbon::now()->format('His-dmY-') . $user->id,
+            'payer_email' => $user->email,
+            'should_send_email' => false,
+            'description' => 'Payment for buying package ' . $package->name,
+            'amount' => $package->price,
+            'invoice_duration' => 172800,
+            'currency' => 'IDR',
+            'locale' => 'en',
+            'reminder_time' => 1,
+            'success_redirect_url' => route('credit.index'),
+            'failure_redirect_url' => route('credit.index'),
+        ]);
 
-            Transaction::create([
-                'status' => 'pending',
+        try {
+            $invoice = $apiInstance->createInvoice($create_invoice_request);
+            $transaction = Transaction::create([
+                'status' => "PENDING",
                 'price' => $package->price,
                 'credits' => $package->credits,
-                'session_id' => $params['order_id'],
-                'user_id' => Auth::id(),
-                'packages_id' => $package->id,
+                'session_id' => $invoice['id'],
+                'user_id' => $user->id,
+                'package_id' => $package->id,
             ]);
+            $create_invoice_request['success_redirect_url'] = $this->success($transaction->id);
+            $create_invoice_request['failure_redirect_url'] = $this->success($transaction->id);
+            return redirect()->away($invoice['invoice_url']);
 
-            // Redirect to Snap Payment Page
-            header('Location: ' . $paymentUrl);
-        } catch (Exception $e) {
-            return $this->cancel($e->getMessage());
+        } catch (\Xendit\XenditSdkException $e) {
+            // echo 'Exception when calling InvoiceApi->createInvoice: ', $e->getMessage(), PHP_EOL;
+            // echo 'Full Error: ', json_encode($e->getFullError()), PHP_EOL;
+            return to_route('credit.index')->with('error', 'There was an error purchasing credits.');
         }
     }
 
-    public function success()
+    public function success($transactionId)
     {
-        return to_route('credit.index')->with('success', 'Credits purchased successfully.');
+        $transaction = Transaction::where('id', $transactionId)->first();
+        $transaction->update([
+            'status' => "PAID",
+        ]);
+        User::where('id', Auth::user()->id)->update([
+            'available_credits' => Auth::user()->available_credits + $transaction->credits,
+        ]);
+        return route('credit.index');
+        // return to_route('credit.index')->with('success', 'Credits purchased successfully.');
     }
 
-    public function cancel($message = null)
+    public function cancel($message = null, $transactionId)
     {
-        return to_route('credit.index')->with('error', $message ?? 'There was an error purchasing credits.');
+        $transaction = Transaction::where('id', $transactionId)->first();
+        $transaction->update([
+            'status' => "CANCEL",
+        ]);
+        return route('credit.index');
+        // return to_route('credit.index')->with('error', $message ?? 'There was an error purchasing credits.');
     }
 }

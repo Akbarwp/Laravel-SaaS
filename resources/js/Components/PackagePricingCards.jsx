@@ -41,7 +41,7 @@ export default function PackagePricingCards({ packages, features }) {
                                     <span>+{p.credits} credits</span>
                                 </li>
                             </ul>
-                            <form action={route('credit.buy', p)} method="post" className="w-full">
+                            <form action={route('credit.buy', p.id)} method="post" className="w-full">
                                 <input type="hidden" name="_token" value={csrf_token} autoComplete="off" hidden />
                                 <button className="text-blue-600 dark:text-blue-500 hover:underline font-medium text-lg inline-flex items-center">
                                     <i className="ri-arrow-right-line font-semibold"></i>

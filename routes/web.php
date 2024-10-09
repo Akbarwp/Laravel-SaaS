@@ -38,7 +38,7 @@ Route::group([
     Route::get('buy-credits', [CreditController::class, 'index'])->name('credit.index');
     Route::get('buy-credits/success', [CreditController::class, 'success'])->name('credit.success');
     Route::get('buy-credits/cancel', [CreditController::class, 'cancel'])->name('credit.cancel');
-    Route::post('buy-credits/{packages}', [CreditController::class, 'buyCredits'])->name('credit.buy');
+    Route::post('buy-credits/{package}', [CreditController::class, 'buyCredits'])->name('credit.buy');
 });
 
 require __DIR__.'/auth.php';
